@@ -7,9 +7,9 @@
  */
 void swap(int *a, int *b)
 {
-    int tmp = *a;
-    *a = *b;
-    *b = tmp;
+	int tmp = *a;
+	*a = *b;
+	*b = tmp;
 }
 
 /**
@@ -21,27 +21,25 @@ void swap(int *a, int *b)
  */
 void sift_down(int *array, size_t size, size_t start, size_t end)
 {
-    size_t root = start;
-    size_t child, swap_idx;
+	size_t root = start;
+	size_t child, swap_idx;
 
-    while ((root * 2) + 1 <= end)
-    {
-        child = (root * 2) + 1;
-        swap_idx = root;
+	while ((root * 2) + 1 <= end)
+	{
+		child = (root * 2) + 1;
+		swap_idx = root;
 
-        if (array[swap_idx] < array[child])
-            swap_idx = child;
-        if (child + 1 <= end && array[swap_idx] < array[child + 1])
-            swap_idx = child + 1;
-        if (swap_idx == root)
-            return;
-        else
-        {
-            swap(&array[root], &array[swap_idx]);
-            print_array(array, size);
-            root = swap_idx;
-        }
-    }
+		if (array[swap_idx] < array[child])
+			swap_idx = child;
+		if (child + 1 <= end && array[swap_idx] < array[child + 1])
+			swap_idx = child + 1;
+		if (swap_idx == root)
+			return;
+
+		swap(&array[root], &array[swap_idx]);
+		print_array(array, size);
+		root = swap_idx;
+	}
 }
 
 /**
@@ -51,26 +49,26 @@ void sift_down(int *array, size_t size, size_t start, size_t end)
  */
 void heap_sort(int *array, size_t size)
 {
-  int start, end;
+	int start, end;
 
-    if (!array || size < 2)
-        return;
+	if (!array || size < 2)
+		return;
 
-    /* Build the max heap */
-    start = (size - 2) / 2;
-    while (start >= 0)
-    {
-        sift_down(array, size, start, size - 1);
-        start--;
-    }
+	/* Build the max heap */
+	start = (size - 2) / 2;
+	while (start >= 0)
+	{
+		sift_down(array, size, start, size - 1);
+		start--;
+	}
 
-    /* Extract elements from heap one by one */
-    end = size - 1;
-    while (end > 0)
-    {
-        swap(&array[end], &array[0]);
-        print_array(array, size);
-        end--;
-        sift_down(array, size, 0, end);
-    }
+	/* Extract elements from heap one by one */
+	end = size - 1;
+	while (end > 0)
+	{
+		swap(&array[end], &array[0]);
+		print_array(array, size);
+		end--;
+		sift_down(array, size, 0, end);
+	}
 }
