@@ -9,16 +9,16 @@
  */
 void print_array(int *array, size_t start, size_t end)
 {
-	size_t i;
+    size_t i;
 
-	printf("Searching in array: ");
-	for (i = start; i <= end; i++)
-	{
-		printf("%d", array[i]);
-		if (i != end)
-			printf(", ");
-	}
-	printf("\n");
+    printf("Searching in array: ");
+    for (i = start; i <= end; i++)
+    {
+        printf("%d", array[i]);
+        if (i != end)
+            printf(", ");
+    }
+    printf("\n");
 }
 
 /**
@@ -32,23 +32,26 @@ void print_array(int *array, size_t start, size_t end)
  */
 int recursive_search(int *array, size_t start, size_t end, int value)
 {
-	size_t mid;
+    size_t mid;
 
-	if (start > end)
-		return (-1);
+    if (start > end)
+        return (-1);
 
-	print_array(array, start, end);
-	mid = start + (end - start) / 2;
+    // Print the current subarray being searched
+    print_array(array, start, end);
 
-	if (array[mid] == value)
-	{
-		if (mid == start || array[mid - 1] != value)
-			return (mid);
-		return (recursive_search(array, start, mid - 1, value));
-	}
-	if (array[mid] >= value)
-		return (recursive_search(array, start, mid, value));
-	return (recursive_search(array, mid + 1, end, value));
+    mid = start + (end - start) / 2;
+
+    if (array[mid] == value)
+    {
+        // Check if this is the first occurrence
+        if (mid == start || array[mid - 1] != value)
+            return (mid);  // First occurrence found
+        return (recursive_search(array, start, mid - 1, value));  // Search in the left part
+    }
+    if (array[mid] >= value)
+        return (recursive_search(array, start, mid, value));  // Search in the left part
+    return (recursive_search(array, mid + 1, end, value));  // Search in the right part
 }
 
 /**
@@ -61,8 +64,8 @@ int recursive_search(int *array, size_t start, size_t end, int value)
  */
 int advanced_binary(int *array, size_t size, int value)
 {
-	if (array == NULL || size == 0)
-		return (-1);
+    if (array == NULL || size == 0)
+        return (-1);
 
-	return (recursive_search(array, 0, size - 1, value));
+    return (recursive_search(array, 0, size - 1, value));
 }
