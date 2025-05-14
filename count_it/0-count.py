@@ -1,51 +1,52 @@
+#!/usr/bin/python3
+"""
+count_words
+"""
 import requests
 
-def count_words(subreddit, word_list, after=None, counter=None):
-    if counter is None:
-        counter = {}
 
-    headers = {'User-Agent': 'MyRedditScraper'}
-    url = f'https://www.reddit.com/r/{subreddit}/hot.json'
-    params = {'limit': 100}
-    if after:
-        params['after'] = after
+def count_words(subreddit, word_list, after=None, word_count={}):
+    headers = {'User-Agent': 'Reddit API script'}
 
-    response = requests.get(url, headers=headers, params=params, allow_redirects=False)
+    # Fetch data from Reddit API
+    url = f"https://www.reddit.com/r/{subreddit}/hot.json"
+    params = {'limit': 100, 'after': after}  # Pagination using 'after'
+    response = requests.get(
+        url, headers=headers, params=params, allow_redirects=False
+        )
 
-    # Check if subreddit is invalid
     if response.status_code != 200:
         return
 
-    data = response.json().get('data', {})
-    posts = data.get('children', [])
+    data = response.json()
+    # Extract titles from the response
+    titles = [post['data']['title'] for post in data['data']['children']]
 
-    # Normalize word list (lowercase and merge duplicates)
-    normalized_words = [word.lower() for word in word_list]
-    merged_words = {}
-    for word in normalized_words:
-        if word in merged_words:
-            merged_words[word] += 1
-        else:
-            merged_words[word] = 1
+    # Normalize the word_list (case insensitive) and prepare for counting
+    word_list = [word.lower() for word in word_list]
 
-    # Count words in titles
-    for post in posts:
-        title = post['data']['title'].lower().split()
-        for word in title:
-            clean_word = ''.join([char for char in word if char.isalpha()])
-            if clean_word in merged_words:
-                if clean_word in counter:
-                    counter[clean_word] += merged_words[clean_word]
-                else:
-                    counter[clean_word] = merged_words[clean_word]
+    # Count occurrences of words in titles
+    for title in titles:
+        words = title.lower().split()
+        for word in word_list:
+            word_count[word] = word_count.get(word, 0) + words.count(word)
 
-    # Recursion if more posts
-    after = data.get('after')
+    after = data['data']['after']
     if after:
-        return count_words(subreddit, word_list, after, counter)
-    else:
-        # Print sorted results
-        if counter:
-            sorted_items = sorted(counter.items(), key=lambda x: (-x[1], x[0]))
-            for word, count in sorted_items:
-                print(f"{word}: {count}")
+        count_words(subreddit, word_list, after, word_count)
+
+    # If we're at the last page, sort and print the results
+    if after is None:
+        # Filter out words with 0 occurrences
+        filtered_word_count = {
+            word: count for word, count in word_count.items() if count > 0
+            }
+
+        # Sort by count (descending), then by word (alphabetically)
+        sorted_word_count = sorted(
+            filtered_word_count.items(), key=lambda item: (-item[1], item[0])
+            )
+
+        # Print results
+        for word, count in sorted_word_count:
+            print(f"{word}: {count}")
