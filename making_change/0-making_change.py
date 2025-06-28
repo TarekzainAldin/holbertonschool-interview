@@ -8,7 +8,7 @@ Defines a function to determine the fewest number of coins to meet a total.
 def makeChange(coins, total):
     """
     Determine the fewest number of coins needed to meet a given amount total.
-    
+
     Arguments:
     coins -- list of coin denominations (list of integers)
     total -- target amount (int)
