@@ -1,17 +1,32 @@
+#!/usr/bin/python3
+"""
+Module to calculate the perimeter of an island described in a grid.
+"""
+
+
 def island_perimeter(grid):
-    perimeter = 0  # نبدأ المحيط من 0
+    """
+    Returns the perimeter of the island described in grid.
 
-    for i in range(len(grid)):  # نمر على الصفوف واحد واحد
-        for j in range(len(grid[0])):  # نمر على الأعمدة داخل كل صف
-            if grid[i][j] == 1:  # إذا كانت الخلية يابسة (1)
-                perimeter += 4  # نضيف 4 للمحيط لأننا نفترض مبدئيًا أن الخلية لها 4 أضلاع
+    Args:
+        grid (List[List[int]]): 2D list representing the map.
 
-                # إذا كانت الخلية التي فوقها (i - 1) يابسة أيضًا، نخصم 2 لأن هناك ضلعين متلاصقين
+    Returns:
+        int: perimeter of the island
+    """
+    perimeter = 0
+    rows = len(grid)
+    cols = len(grid[0]) if rows > 0 else 0
+
+    for i in range(rows):
+        for j in range(cols):
+            if grid[i][j] == 1:
+                perimeter += 4
+                # Check top neighbor
                 if i > 0 and grid[i - 1][j] == 1:
                     perimeter -= 2
-
-                # إذا كانت الخلية التي على يسارها (j - 1) يابسة أيضًا، نخصم 2 لنفس السبب
+                # Check left neighbor
                 if j > 0 and grid[i][j - 1] == 1:
                     perimeter -= 2
 
-    return perimeter  # نُرجع المحيط النهائي
+    return perimeter
